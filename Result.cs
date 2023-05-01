@@ -1,10 +1,13 @@
-﻿namespace Functional.Net;
+﻿using System.Text.Json.Serialization;
+
+namespace Functional.Net;
 
 public class Result
 {
 	public bool IsSuccessful { get; init; }
-	public bool IsNotSuccessful => IsSuccessful is false;
+	public bool IsNotSuccessful => !IsSuccessful;
 
+	[JsonIgnore]
 	public Error ErrorMessage
 	{
 		get => ErrorMessages.Any() ? ErrorMessages.First() : "";
@@ -14,8 +17,8 @@ public class Result
 			ErrorMessages = errorMessages;
 		}
 	}
+	public IEnumerable<Error> ErrorMessages { get; init; } = new List<Error>();
 
-	public IEnumerable<Error> ErrorMessages { get; protected init; } = new List<Error>();
 	public static Result True => new() { IsSuccessful = true };
 	public static Result False => new() { IsSuccessful = false };
 	public static Result Error(string error) => new() { IsSuccessful = false, ErrorMessage = error };

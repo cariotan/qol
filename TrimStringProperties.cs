@@ -2,23 +2,26 @@
 
 public static partial class ExtensionMethods
 {
-	public static void TrimStringProperties(object obj)
+	public static void TrimStringProperties(this object obj)
 	{
 		PropertyInfo[] properties = obj.GetType().GetProperties();
 
 		foreach(PropertyInfo property in properties)
 		{
-			if(property.PropertyType == typeof(string))
+			if(property.PropertyType != typeof(string))
 			{
-				string value = (string)property.GetValue(obj);
-
-				if(value != null)
-				{
-					value = value.Trim();
-					property.SetValue(obj, value);
-				}
+				continue;
 			}
+
+			string value = (string)property.GetValue(obj);
+
+			if(value == null)
+			{
+				continue;
+			}
+
+			value = value.Trim();
+			property.SetValue(obj, value);
 		}
 	}
-
 }
